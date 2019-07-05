@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div id="todo-table">
+        <h1>{{datas.appName}}</h1>
+        <form>
+            <input type="text" name="item" placeholder="Add new item..." required>
+            <button type="submit" class="add_item">添加任务</button>
+        </form>
+        <ul>
+            {% for task in datas.tasks %} {% if task.done %} {% set name = 'done' %}
+            <li class="{{name}}" _id="{{task.id}}"><span>[{{task.id}}] - {{task.title}}</span> <button class="btn">删除</button></li>
+            {% else %}
+            <li _id="{{task.id}}"><span>[{{task.id}}] - {{task.title}}</span> <button class="btn">删除</button></li>
+            {% endif %} {% endfor %}
+        </ul>
+    </div>
+
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(function() {
+            $('form').on('submit', function(event) {
+                event.preventDefault();
+                var item = $('form input');
+                var todo = {
+                    title: item.val().trim()
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/add',
+                    data: todo,
+                    success: function(data) {
+                        //do something with the data via front-end framework
+                        location.reload();
+                    }
+                });
+
+                return false;
+
+            });
+
+            $('li span').on('click', function() {
+                // var item = $(this).text().trim().replace(/ /g, "-");
+                var id = $(this).parent().attr('_id')
+                $.ajax({
+                    type: 'post',
+                    url: '/change/' + id,
+                    success: function(data) {
+                        //do something with the data via front-end framework
+                        location.reload();
+                    }
+                })
+            });
+
+            $('li .btn').on('click', function() {
+                // var item = $(this).text().trim().replace(/ /g, "-");
+                var id = $(this).parent().attr('_id')
+                $.ajax({
+                    type: 'post',
+                    url: '/remove/' + id,
+                    success: function(data) {
+                        //do something with the data via front-end framework
+                        location.reload();
+                    }
+                })
+            });
+        })
+    </script>
+</body>
+
+</html>
