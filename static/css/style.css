@@ -1,3 +1,9 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     background: #0d1521;
     font-family: tahoma;
@@ -11,6 +17,27 @@ body {
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
+    min-height: 100vh;
+}
+
+.todo-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.login_cotent {
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+}
+
+#todo-table a {
+    color: #989898;
+}
+
+#todo-table form {
+    margin-top: 20px;
 }
 
 #todo-table form:after {
@@ -20,9 +47,11 @@ body {
     clear: both;
 }
 
-input[type="text"] {
-    width: 30%;
-    padding: 20px;
+#todo-table .add_input {
+    width: 50%;
+    padding: 0 15px;
+    height: 60px;
+    line-height: 60px;
     background: #181c22;
     border: 0;
     float: left;
@@ -30,10 +59,11 @@ input[type="text"] {
     color: #989898;
 }
 
-.add_item {
-    padding: 20px;
-    width: 30%;
+#todo-table .add_item {
+    padding: 0 20px;
     float: left;
+    height: 60px;
+    line-height: 60px;
     background: #23282e;
     border: 0;
     box-sizing: border-box;
@@ -42,13 +72,13 @@ input[type="text"] {
     font-size: 20px;
 }
 
-ul {
+#todo-table ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
 }
 
-li {
+#todo-table li {
     width: 100%;
     padding: 20px;
     box-sizing: border-box;
@@ -58,17 +88,17 @@ li {
     letter-spacing: 1px;
 }
 
-li:hover span {
+#todo-table li:hover span {
     text-decoration: line-through;
     background: rgba(0, 0, 0, 0.2);
 }
 
-li.done span {
+#todo-table li.done span {
     text-decoration: line-through;
     background: rgba(0, 0, 0, 0.2);
 }
 
-li .btn {
+#todo-table li .btn {
     padding: 5px 10px;
     background: #23282e;
     border: 0;
@@ -76,4 +106,12 @@ li .btn {
     color: #fff;
     cursor: pointer;
     font-size: 16px;
+}
+
+.login.active {
+    display: block;
+}
+
+.register.active {
+    display: block;
 }

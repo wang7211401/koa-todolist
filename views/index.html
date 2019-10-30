@@ -5,32 +5,250 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <title>todo-list</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
     <div id="todo-table">
-        <h1>{{datas.appName}}</h1>
-        <form>
-            <input type="text" name="item" placeholder="Add new item..." required>
+        <div class="todo-user">
+            <h1>{{datas.appName}}</h1>
+
+            {% if datas.id %}
+            <div class="login_cotent">
+                <a href="javascript:;">{{datas.username}}</a>
+                <span> | </span>
+                <a href="javascript:;" onclick="logout()">退出</a>
+            </div>
+            {% else %}
+            <div class="login_cotent">
+                <a href="javascript:;" onclick="toggle('.register')">注册</a>
+                <span> | </span>
+                <a href="javascript:;" onclick="toggle('.login')">登录</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <form class="add_from">
+            <input class="add_input" type="text" name="item" placeholder="Add new item..." required>
             <button type="submit" class="add_item">添加任务</button>
         </form>
         <ul>
             {% for task in datas.tasks %} {% if task.done %} {% set name = 'done' %}
-            <li class="{{name}}" _id="{{task.id}}"><span>[{{task.id}}] - {{task.title}}</span> <button class="btn">删除</button></li>
+            <li class="{{name}}" _id="{{task.id}}" onclick="changeDone('{{task.id}}',{{task.done}})"><span>{{task.title}}</span> <button class="btn">删除</button></li>
             {% else %}
-            <li _id="{{task.id}}"><span>[{{task.id}}] - {{task.title}}</span> <button class="btn">删除</button></li>
+            <li _id="{{task.id}}" onclick="changeDone('{{task.id}}',{{task.done}})"><span>{{task.title}}</span> <button class="btn">删除</button></li>
             {% endif %} {% endfor %}
         </ul>
+
+
+        <div class="modal login">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">登录</h5>
+                        <button type="button" class="close" onclick="closeBtn('.login')">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group row">
+                                <label for="login_username" class="col-md-3 col-form-label">用户名</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="login_username" placeholder="请输入用户名" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="login_password" class="col-md-3 col-form-label">密码</label>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control" id="login_password" placeholder="密码" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="loginSubmit()">登录</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeBtn('.login')">取消</button>
+                        <a href="" onclick="toggle('.register','.login')">我要注册</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal register">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">注册</h5>
+                        <button type="button" class="close" onclick="closeBtn('.register')">
+                                <span>&times;</span>
+                            </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group row">
+                                <label for="reg_username" class="col-md-3 col-form-label">用户名</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="reg_username" placeholder="请输入用户名" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="reg_email" class="col-md-3 col-form-label">邮箱</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="reg_email" placeholder="请输入邮箱" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="reg_password" class="col-md-3 col-form-label">密码</label>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control" id="reg_password" placeholder="密码" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="reg_repassword" class="col-md-3 col-form-label">重复密码</label>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control" id="reg_repassword" placeholder="重复密码" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="regSubmit()">注册</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeBtn('.register')">取消</button>
+                        <a href="javascript:;" onclick="toggle('.login','.register')">我有账号，立即登录</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="//lib.baomitu.com/layer/2.3/layer.js"></script>
     <script>
+        function closeBtn(obj) {
+            event.preventDefault()
+            $(obj).removeClass('active');
+        }
+
+        function toggle(obj, toggleObj) {
+            event.preventDefault()
+            $(obj).addClass('active')
+            if (toggleObj) {
+                $(toggleObj).removeClass('active')
+            }
+        }
+
+        function logout() {
+            $.ajax({
+                type: 'post',
+                url: '/logout',
+                success: function(res) {
+                    if (res.code == 0) {
+                        layer.msg(res.msg)
+                        location.href = "/"
+                    } else {
+                        layer.msg(res.msg)
+                    }
+                }
+            })
+        }
+
+        function loginSubmit() {
+            let username = $('#login_username').val().trim();
+            let password = $('#login_password').val();
+            $.ajax({
+                type: 'post',
+                url: '/login',
+                data: {
+                    username,
+                    password
+                },
+                success: function(res) {
+                    if (res.code == 0) {
+                        layer.msg(res.msg)
+                        location.href = "/"
+                    } else {
+                        layer.msg(res.msg)
+                    }
+                }
+            })
+
+        }
+
+        function regSubmit() {
+            event.preventDefault()
+            let username = $('#reg_username').val().trim();
+            let email = $('#reg_email').val().trim();
+            let password = $('#reg_password').val();
+            let repassword = $('#reg_repassword').val();
+            $.ajax({
+                type: 'post',
+                url: '/register',
+                data: {
+                    username,
+                    email,
+                    password,
+                    repassword
+                },
+                success: function(res) {
+                    if (res.code == 0) {
+                        layer.msg(res.msg)
+                        $.ajax({
+                            type: 'post',
+                            url: '/login',
+                            data: {
+                                username,
+                                password
+                            },
+                            success: function(res) {
+                                if (res.code == 0) {
+                                    location.href = "/"
+                                } else {
+                                    layer.msg(res.msg)
+                                }
+                            }
+                        })
+                    } else {
+                        layer.msg(res.msg)
+                    }
+                }
+            })
+        }
+
+        function changeDone(id, done) {
+            $.ajax({
+                type: 'post',
+                url: '/change',
+                data: {
+                    id,
+                    done: Number(!done)
+                },
+                success: function(res) {
+                    //do something with the data via front-end framework
+                    // location.reload();
+                    if (res.code == 0) {
+                        layer.msg(res.msg)
+                        setTimeout(() => {
+                            location.reload()
+                        }, 500)
+                    } else {
+                        layer.msg(res.msg)
+                    }
+                }
+            })
+        }
+
         $(function() {
-            $('form').on('submit', function(event) {
+            $('.add_from').on('submit', function(event) {
                 event.preventDefault();
-                var item = $('form input');
+                var item = $('.add_from input');
                 var todo = {
                     title: item.val().trim()
                 };
@@ -39,9 +257,17 @@
                     type: 'POST',
                     url: '/add',
                     data: todo,
-                    success: function(data) {
+                    success: function(res) {
                         //do something with the data via front-end framework
-                        location.reload();
+                        // location.reload();
+                        if (res.code == 0) {
+                            layer.msg(res.msg)
+                            setTimeout(() => {
+                                location.reload();
+                            }, 500)
+                        } else {
+                            layer.msg(res.msg)
+                        }
                     }
                 });
 
@@ -49,28 +275,50 @@
 
             });
 
-            $('li span').on('click', function() {
-                // var item = $(this).text().trim().replace(/ /g, "-");
-                var id = $(this).parent().attr('_id')
-                $.ajax({
-                    type: 'post',
-                    url: '/change/' + id,
-                    success: function(data) {
-                        //do something with the data via front-end framework
-                        location.reload();
-                    }
-                })
-            });
+            // $('li span').on('click', function() {
+            // var item = $(this).text().trim().replace(/ /g, "-");
+            //     var id = $(this).parent().attr('_id')
+            //     $.ajax({
+            //         type: 'post',
+            //         url: '/change',
+            //         data: {
+            //             id,
+            //         },
+            //         success: function(res) {
+            //             //do something with the data via front-end framework
+            //             // location.reload();
+            //             if (res.code == 0) {
+            //                 layer.msg(res.msg)
+            //                 setTimeout(() => {
+            //                     location.reload()
+            //                 }, 500)
+            //             } else {
+            //                 layer.msg(res.msg)
+            //             }
+            //         }
+            //     })
+            // });
 
-            $('li .btn').on('click', function() {
-                // var item = $(this).text().trim().replace(/ /g, "-");
+            $('li .btn').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 var id = $(this).parent().attr('_id')
                 $.ajax({
                     type: 'post',
-                    url: '/remove/' + id,
-                    success: function(data) {
+                    url: '/remove',
+                    data: {
+                        id
+                    },
+                    success: function(res) {
                         //do something with the data via front-end framework
-                        location.reload();
+                        if (res.code == 0) {
+                            layer.msg(res.msg)
+                            setTimeout(() => {
+                                location.reload()
+                            }, 500)
+                        } else {
+                            layer.msg(res.msg)
+                        }
                     }
                 })
             });
