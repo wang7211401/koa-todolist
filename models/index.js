@@ -29,7 +29,7 @@ Content.belongsTo(User, {
   // 这里是代码
   try {
     console.log("sequelize",sequelize)
-    await sequelize.sync({ force: true });
+    await sequelize.sync();
   
     
     // Object.keys(db).forEach(modelName => {

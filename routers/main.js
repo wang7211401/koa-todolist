@@ -195,10 +195,6 @@ router.post('/register', async ctx => {
  * 添加，添加新的任务
  */
 
-router.get('/add', ctx => {
-    ctx.body = '/add'
-});
-
 router.post('/add', async ctx => {
     let uid = ctx.session.uid
     let title = ctx.request.body.title;
@@ -208,6 +204,23 @@ router.post('/add', async ctx => {
         return ctx.body = {
             code: 1,
             msg: '请先登录后操作！',
+            data: ''
+        }
+    }
+
+    let user = await Models.User.findOne({
+        where:{
+            id: uid
+        }
+    })
+
+    console.log("user",user)
+
+    if(!user){
+        ctx.session.uid = null
+        return ctx.body = {
+            code: 1,
+            msg: '请重新登录后操作！',
             data: ''
         }
     }
