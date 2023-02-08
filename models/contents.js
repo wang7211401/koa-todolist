@@ -1,6 +1,7 @@
-'use strict';
-module.exports = (sequelize, DataTypes) => {
-    const Content = sequelize.define('Contents', {
+const {DataTypes,Model} = require('sequelize');
+class Content extends Model {}
+module.exports = (sequelize) => {
+    Content.init({
         id: {
             allowNull: false,
             autoIncrement: true,
@@ -10,10 +11,6 @@ module.exports = (sequelize, DataTypes) => {
         user_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            references: {
-                model: "Users",
-                key: 'id'
-            }
         },
         title: {
             type: DataTypes.STRING,
@@ -32,13 +29,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE
         }
     }, {
-        tableName: 'contents'
+        sequelize,
+        modelName: 'contents'
     });
-    Content.associate = function(models) {
-        // associations can be defined here
-        Content.belongsTo(models.Users, {
-            foreignKey: 'user_id'
-        });
-    };
+    // Content.associate = function(models) {
+    //     // associations can be defined here
+    //     Content.belongsTo(models.Users, {
+    //         foreignKey: 'user_id'
+    //     });
+    // };
     return Content;
 };

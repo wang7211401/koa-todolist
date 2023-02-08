@@ -1,6 +1,8 @@
-'use strict';
-module.exports = (sequelize, DataTypes) => {
-    const User = sequelize.define('Users', {
+const {DataTypes,Model} = require('sequelize');
+class User extends Model {}
+
+module.exports = (sequelize) => {
+    User.init({
         id: {
             allowNull: false,
             autoIncrement: true,
@@ -31,13 +33,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE
         }
     }, {
-        tableName: 'users'
+        sequelize, // 我们需要传递连接实例
+        modelName:"users"
     });
-    User.associate = function(models) {
-        // associations can be defined here
-        User.hasMany(models.Contents, {
-            foreignKey: 'user_id'
-        });
-    };
+
+    // User.associate = function(models) {
+    //     // associations can be defined here
+    //     User.hasMany(models.Contents, {
+    //         foreignKey: 'user_id'
+    //     });
+    // };
     return User;
 };

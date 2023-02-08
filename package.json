@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "cross-env NODE_ENV=development node app.js",
+    "win-prod": "cross-env NODE_ENV=production node app.js",
+    "prod": "NODE_ENV=production node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,8 +21,12 @@
     "koa-swig": "^2.2.1",
     "md5": "^2.2.1",
     "moment": "^2.24.0",
-    "mysql2": "^1.7.0",
-    "sequelize": "^5.18.0",
-    "sequelize-cli": "^5.5.1"
+    "mysql2": "^3.1.1",
+    "sequelize": "^6.28.0",
+    "sequelize-cli": "^6.6.0",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }

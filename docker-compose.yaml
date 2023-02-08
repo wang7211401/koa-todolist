@@ -1,0 +1,26 @@
+version: "3.0"
+
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0.32
+    restart: on-failure
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=todo_app
+    networks:
+      - my-server
+  server:
+    container_name: server
+    build: .
+    ports:
+      - "3000:3000"
+    restart: on-failure
+    networks:
+      - my-server
+    depends_on:
+      - mysql
+networks:
+  my-server:

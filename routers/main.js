@@ -1,5 +1,5 @@
 const KoaRouter = require('koa-router');
-const Sequelize = require('sequelize')
+const {Sequelize} = require('sequelize')
 const md5 = require('md5');
 const moment = require('moment');
 const Models = require('../models');
@@ -36,7 +36,7 @@ router.post('/login', async ctx => {
         }
     }
 
-    let user = await Models.Users.findOne({
+    let user = await Models.User.findOne({
         where: {
             username
         }
@@ -94,12 +94,12 @@ router.get('/', async ctx => {
         })
     }
 
-    let content = await Models.Contents.findAndCountAll({
+    let content = await Models.Content.findAndCountAll({
         where: {
             user_id: uid
         },
         include: {
-            model: Models.Users
+            model: Models.User
         }
     })
 
@@ -161,7 +161,7 @@ router.post('/register', async ctx => {
         }
     }
 
-    let user = await Models.Users.findOne({
+    let user = await Models.User.findOne({
         where: {
             username
         }
@@ -175,7 +175,7 @@ router.post('/register', async ctx => {
         }
     }
 
-    let newUser = await Models.Users.build({
+    let newUser = await Models.User.build({
         username,
         email,
         password: md5(password)
@@ -212,7 +212,7 @@ router.post('/add', async ctx => {
         }
     }
 
-    let newContent = await Models.Contents.build({
+    let newContent = await Models.Content.build({
         user_id: uid,
         title
     }).save();
@@ -248,7 +248,7 @@ router.post('/change', async ctx => {
         }
     }
 
-    let content = await Models.Contents.findOne({
+    let content = await Models.Content.findOne({
         where: {
             [Sequelize.Op.and]: [
                 { 'id': contentId },
@@ -292,7 +292,7 @@ router.post('/remove', async ctx => {
         }
     }
 
-    let content = await Models.Contents.findOne({
+    let content = await Models.Content.findOne({
         where: {
             [Sequelize.Op.and]: [
                 { 'id': contentId },
@@ -309,7 +309,7 @@ router.post('/remove', async ctx => {
         }
     }
 
-    await Models.Contents.destroy({
+    await Models.Content.destroy({
         where: {
             [Sequelize.Op.and]: [
                 { 'id': contentId },
